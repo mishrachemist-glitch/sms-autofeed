@@ -3116,7 +3116,6 @@ const CHEM_SPEC_LIMITS = [
 
 function checkOutOfSpec(row) {
   const issues = [];
-  const failedKeys = [];
   CHEM_SPEC_LIMITS.forEach(spec => {
     const raw = row[spec.colOffset];
     if (typeof raw !== "number") return;
@@ -3124,10 +3123,10 @@ function checkOutOfSpec(row) {
     // displayed/entered (e.g. "0.050") - avoids flagging a value that's
     // only microscopically over the limit due to floating-point storage.
     const v = Math.round(raw * 1000) / 1000;
-    if (spec.type === "max" && v > spec.value) { issues.push(`${spec.label}=${v} (max ${spec.value})`); failedKeys.push(spec.key); }
-    if (spec.type === "min" && v < spec.value) { issues.push(`${spec.label}=${v} (min ${spec.value})`); failedKeys.push(spec.key); }
+    if (spec.type === "max" && v > spec.value) issues.push(`${spec.label}=${v} (max ${spec.value})`);
+    if (spec.type === "min" && v < spec.value) issues.push(`${spec.label}=${v} (min ${spec.value})`);
   });
-  return { issues, failedKeys };
+  return issues;
 }
 
 // Scans the given date range for out-of-spec heats, capturing tonnage
